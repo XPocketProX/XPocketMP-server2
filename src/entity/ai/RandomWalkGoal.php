@@ -23,8 +23,13 @@ class RandomWalkGoal extends Goal {
 
     public function start() : void {
         $randomPosition = $this->getRandomPosition();
-        $this->entity->setMotion($randomPosition->subtract($this->entity->getPosition())->normalize()->multiply(0.2)); // Menambah gerakan
-        $this->cooldown = $this->cooldownMax; // Reset cooldown
+        $motion = $randomPosition->subtract(
+            $this->entity->getPosition()->x,
+            $this->entity->getPosition()->y,
+            $this->entity->getPosition()->z
+        )->normalize()->multiply(0.2);
+        $this->entity->setMotion($motion);
+        $this->cooldown = $this->cooldownMax;
     }
 
     public function tick() : void {
@@ -36,7 +41,7 @@ class RandomWalkGoal extends Goal {
     private function getRandomPosition() : Vector3 {
         $x = $this->entity->getPosition()->x + mt_rand(-$this->walkRadius, $this->walkRadius);
         $z = $this->entity->getPosition()->z + mt_rand(-$this->walkRadius, $this->walkRadius);
-        $y = $this->entity->getWorld()->getHighestBlockAt((int)$x, (int)$z); // Dapatkan posisi tertinggi
+        $y = $this->entity->getWorld()->getHighestBlockAt((int)$x, (int)$z);
         return new Vector3($x, $y, $z);
     }
 }
